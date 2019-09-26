@@ -2,7 +2,7 @@
 
 A simple Flutter UI.
 
-<img src="https://media.giphy.com/media/RHJCmZ30UvjsVRtPnw/200w_d.gif" >
+<img src="https://media.giphy.com/media/KzDuIX93N9f9eIFyUQ/giphy.gif" >
 
 ## Getting Started
 
