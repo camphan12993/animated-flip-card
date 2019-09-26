@@ -46,9 +46,11 @@ class _AnimatedFlipCardState extends State<AnimatedFlipCard>
     _flipCardController =
         AnimationController(vsync: this, duration: Duration(milliseconds: 800));
 
+    // play from 0  to 0.5s
     _frontAnimation = Tween<double>(begin: 0.0, end: 0.5 * pi).animate(
         CurvedAnimation(parent: _flipCardController, curve: Interval(0, 0.5)));
 
+    // delay in 0.5s(wait for the front flip completed) and then play
     _backAnimation = Tween<double>(begin: 1.5 * pi, end: 2 * pi).animate(
         CurvedAnimation(parent: _flipCardController, curve: Interval(0.5, 1)));
   }
@@ -59,93 +61,64 @@ class _AnimatedFlipCardState extends State<AnimatedFlipCard>
     super.dispose();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        FloatingActionButton(
-          child: Icon(Icons.school),
-          onPressed: () {
-            if (_flipCardController.isDismissed) {
-              _flipCardController.forward();
-            } else {
-              _flipCardController.reverse();
-            }
-          },
-        ),
-        Container(
-          child: Center(
-            child: Stack(
-              children: <Widget>[
-                AnimatedBuilder(
-                    child: CardBack(),
-                    animation: _backAnimation,
-                    builder: (BuildContext context, Widget child) {
-                      return Transform(
-                        alignment: FractionalOffset.center,
-                        child: child,
-                        transform: Matrix4.identity()
-                          ..rotateY(_backAnimation.value),
-                      );
-                    }),
-                AnimatedBuilder(
-                    child: CardFront(),
-                    animation: _frontAnimation,
-                    builder: (BuildContext context, Widget child) {
-                      return Transform(
-                        alignment: FractionalOffset.center,
-                        child: child,
-                        transform: Matrix4.identity()
-                          ..rotateY(_frontAnimation.value),
-                      );
-                    }),
-              ],
-            ),
-          ),
-        ),
-      ],
-    );
+  void flipCard() {
+    if (_flipCardController.isDismissed) {
+      _flipCardController.forward();
+    } else {
+      _flipCardController.reverse();
+    }
   }
-}
 
-class CardFront extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-          color: Colors.orangeAccent,
-          borderRadius: BorderRadius.all(Radius.circular(10.0)),
-          boxShadow: [
-            new BoxShadow(
-                color: Colors.black26,
-                offset: new Offset(10.0, 10.0),
-                blurRadius: 20.0,
-                spreadRadius: 0.0)
-          ]),
-      width: 300.0,
-      height: 400.0,
-      child: GestureDetector(
-        child: Center(
-          child: Text(
-            'Tap to Flip',
-            style: TextStyle(
-                color: Colors.black54,
-                fontSize: 40.0,
-                fontWeight: FontWeight.bold),
-          ),
+      child: Center(
+        child: Stack(
+          children: <Widget>[
+            AnimatedBuilder(
+                child: GestureDetector(
+                  child: CustomCard('Back', Colors.white),
+                  onTap: flipCard,
+                ),
+                animation: _backAnimation,
+                builder: (BuildContext context, Widget child) {
+                  return Transform(
+                    alignment: FractionalOffset.center,
+                    child: child,
+                    transform: Matrix4.identity()
+                      ..rotateY(_backAnimation.value),
+                  );
+                }),
+            AnimatedBuilder(
+                child: GestureDetector(
+                  child: CustomCard('Front', Colors.orangeAccent),
+                  onTap: flipCard,
+                ),
+                animation: _frontAnimation,
+                builder: (BuildContext context, Widget child) {
+                  return Transform(
+                    alignment: FractionalOffset.center,
+                    child: child,
+                    transform: Matrix4.identity()
+                      ..rotateY(_frontAnimation.value),
+                  );
+                }),
+          ],
         ),
       ),
     );
   }
 }
 
-class CardBack extends StatelessWidget {
+class CustomCard extends StatelessWidget {
+  final String title;
+  final Color color;
+  CustomCard(this.title, this.color);
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-          color: Colors.white,
+          color: this.color,
           borderRadius: BorderRadius.all(Radius.circular(10.0)),
           boxShadow: [
             new BoxShadow(
@@ -158,7 +131,7 @@ class CardBack extends StatelessWidget {
       height: 400.0,
       child: Center(
         child: Text(
-          'Card Detail',
+          this.title,
           style: TextStyle(
               color: Colors.black54,
               fontSize: 40.0,
