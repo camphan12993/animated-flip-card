@@ -1,6 +1,6 @@
-# animated_flip_card
+# Animated Flip Card in Flutter
 
-A new Flutter project.
+A simple Flutter UI.
 
 ## Getting Started
 
