@@ -1,4 +1,4 @@
-# Animated Flip Card in Flutter
+# Card Flip Animation for Flutter
 
 A simple Flutter UI.
 
